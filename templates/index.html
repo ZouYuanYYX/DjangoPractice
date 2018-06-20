@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>tms快捷造托运单</title>
+ </head>
+
+ <body bgcolor="#F0F8FF">
+ <form>
+	<div >
+		<p style = "color:#FF0000;">请选择托运单状态:
+		<select style="margin:10px;width:160px" id = "tydStatus">
+		    <option value = ""> </option>
+			<option value = "已开单">已开单 </option>
+			<option value = "已提货">已提货 </option>
+			<option value = "已入库">已入库 </option>
+			<option value = "已配载">已配载 </option>
+			<option value = "运输中">运输中 </option>
+			<option value = "已到站">已到站 </option>
+			<option value = "已配送">已配送 </option>
+			<option value = "已签收">已签收 </option>
+		</select>
+		</p>
+
+		<div style="display: none" id = "createFenBoDan">
+		<p style = "color:#FF0000">是否要生成分拨单:
+		<select style="margin:10px;padding-right:28px;;width:160px">
+		    <option value = ""> </option>
+			<option value = "是">是   </option>
+			<option value = "否">否   </option>
+		</select>
+		</p>
+		</div>
+	<table cellspacing="10px">
+	  <tbody>
+	   <tr>
+	    <td scope = "col" style="text-align:right;">用户名：</td>
+		<td><input type = "text" maxlength="20" style="width:200px"  placeholder = "用户名" name = "username" id = "name"/></td>
+		<td scope = "raw" style="text-align:right;" >&emsp;密码：</td>
+		<td><input type = "text" maxlength="20" style="width:200px"  placeholder = "密码" name = "password" id = "psswd"  onchange = "ajax_request()"/></td>
+	   </tr>
+
+	   <tr>
+	     <td scope = "col" style="text-align:right;">发货网点：</td>
+        <td><select  style="width:204px"  name = "senderpoint" id = "senderpoint">
+		</select></td>
+
+		 <td scope = "raw" style="text-align:right;">&emsp;收货网点：</td>
+        <td><select  style="width:204px"  name = "receiverpoint" id = "receiverpoint">
+		</select></td>
+	   </tr>
+
+		<p>
+
+		</p>
+
+
+		<tr>
+	     <td scope = "col" style="text-align:right;">货物名称：</td>
+          <td><input type = "text" style="width:200px" placeholder = "货物名称" name = "goodsname" id = "goodsname"/></td>
+
+
+		  <td scope = "col" style="text-align:right;">提货方式：</td>
+		<td>
+        <select style="width:204px"   name = "pickway" id = "pickway">
+            <option value = ""> </option>
+			<option value = "上门提货">上门提货   </option>
+			<option value = "送货上门">送货上门   </option>
+		</select></td>
+		</tr>
+	  </tbody>
+	</table>
+
+		<p>
+
+		</p>
+
+		<button type="button" onclick = "createTYD()" style="margin-left:300px;height:35px;padding-right:20px;padding-left:20px;background-color: #FF0000;color:white;">创  建</button>
+
+        <p>
+
+		</p>
+        <p id = "result"> </p>
+
+  </div>
+
+ </form>
+
+ <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"> </script>
+    <script>
+        //商户登陆后的token
+        var token;
+
+		$(document).ready(function() {
+			$("#tydStatus").click(function() {
+				var obj = document.getElementById("tydStatus");
+				var index = obj.selectedIndex;//序号，取当前选中选项的序号
+				var text = obj.options[index].value;
+				if(text == "已配载") {
+					$("#createFenBoDan").attr("style"," display: block;");
+				} else {
+					$("#createFenBoDan").attr("style"," display: none;");
+				}
+			}) ;
+		});
+
+    //调收货网点接口后，处理接口返回的json值
+        function handleSenderPointResponse(list) {
+            let tempStr = "";
+            if(Array.isArray(list) && list.length!=0) {
+                list.map(item=>{
+                    //console.log(item.name);
+                    $("#senderpoint").append("<option value='"+item.name+"'>"+item.name+"</option>");
+                })
+            }
+            return tempStr;
+        }
+    //调收货网点接口后，处理接口返回的json值
+        function handleReceiverPointResponse(list) {
+            let tempStr = "";
+            if(Array.isArray(list) && list.length!=0) {
+                list.map(item=>{
+                    //console.log(item.name);
+                    $("#receiverpoint").append("<option value='"+item.name+"'>"+item.name+"</option>");
+                })
+            }
+            return tempStr;
+        }
+
+    //调登录接口，调获取发货网点、收货网点的接口
+	function ajax_request(){
+	    var userName = document.getElementById("name").value;
+		var password = document.getElementById("psswd").value;
+		console.log("userName:"+userName);
+        console.log("password:"+password);
+        $.ajax({
+            url: '/login_action/',
+            type: 'POST',
+            async:false,
+            data: {'username': userName, 'password': password},
+            success: function (data) {
+                token = data;
+                //console.log(data);
+            }
+        })
+
+        $.ajax({
+            url: '/getsendStation/',
+            type: 'POST',
+            async:false,
+            data: {'mobile': userName, 'merchantToken': token},
+            success: function (response) {
+                let {status, data} = JSON.parse(response);
+                if(status == 200) {
+                    handleSenderPointResponse(data);
+                }
+            }
+        })
+
+        $.ajax({
+            url: '/getReceiverStation/',
+            type: 'POST',
+            async:false,
+            data: {'mobile': userName, 'merchantToken': token},
+            success: function (response) {
+                let {status, data} = JSON.parse(response);
+                if(status == 200) {
+                    handleReceiverPointResponse(data);
+                }
+            }
+        })
+    }
+    //处理select
+    function getSelectValue(id) {
+        //var obj = document.getElementById(id);
+        //var index = obj.selectedIndex;//序号，取当前选中选项的序号
+        //var text = obj.options[index].value;
+        return $("#"+id).val();
+        //return text;
+    }
+    //创建工单的方法
+    function createTYD() {
+        //选择的托运单状态值
+        var tydStatus = getSelectValue("tydStatus");
+        //手机号
+        var phone = document.getElementById("name").value;
+        console.log("phone:"+phone);
+        //网点数据
+        var senderStation = getSelectValue("senderpoint");
+        console.log("senderStation:"+senderStation);
+
+        var receiverStation = getSelectValue("receiverpoint");
+        console.log("receiverStation:"+receiverStation);
+        //提货方式
+        var pickGoodsWay = getSelectValue("pickway");
+        console.log("pickGoodsWay:"+pickGoodsWay);
+        //货物名称
+        var goodsName = document.getElementById("goodsname").value;
+        console.log("goodsName:"+goodsName);
+        $.ajax({
+            url: '/createTYD/',
+            type: 'POST',
+            async:false,
+            data: {'tydStatus':tydStatus,'mobile':phone,'merchantToken':token,'senderStation':senderStation,'receiverStation':receiverStation,'pickGoodsWay':pickGoodsWay,'goodsName':goodsName},
+            success: function (response) {
+                console.log(response)
+                document.getElementById("result").innerHTML = response;
+            }
+        })
+    }
+
+
+
+  </script>
+ </body>
+</html>
