@@ -1,12 +1,17 @@
 # -*- coding:utf-8 -*-
+# author 邹元
 import time
 import interface
 import get_id
+import json
 
+#提货方式为送货上门
 def yiruku(merchantToken,createrName,createrId,takeGoodsMethod,sendStationId,sendStationName,receiveStationId,receiveStationName,goodsName) :
 	'''获取托运单号及货号'''
-	tyd_id = get_id.getTYD_id(merchantToken)
-	tyh_id = get_id.getTYH_id(merchantToken)
+	tyd_id = get_id.getTYD_id(merchantToken,sendStationId)
+	tyh_id = get_id.getTYH_id(merchantToken,sendStationId)
+	# 定义接口的返回值
+	ruKuResult = {"status": 0, "message": '', "tydId": ''}
 	date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 	'''创建运单'''
 	url = "http://192.168.173.152/api/operator/consign/add?token=" + merchantToken
@@ -30,7 +35,7 @@ def yiruku(merchantToken,createrName,createrId,takeGoodsMethod,sendStationId,sen
 				"receiveStationId": receiveStationId,
 				"receiveStationName": receiveStationName,
 				"takeGoodsMethod": takeGoodsMethod,
-				"receiveGoodsMethod": "上门提货",
+				"receiveGoodsMethod": "DTD_DELIVERY",
 				"receiptRequire": "回单签字",
 				"transportFee": 65,
 				"infoFee": 10,
@@ -81,15 +86,19 @@ def yiruku(merchantToken,createrName,createrId,takeGoodsMethod,sendStationId,sen
 
 	values = {"consignBaseVo": consignBaseVo,
 			"consignGoodsInfoVoList": consignGoodsInfoVoList}
-	print "创建运单结果：" + interface.requestInterfacePost_Json(url, values)
-	return tyd_id
+	#调创建托运单的接口
+	r = interface.requestInterfacePost_Json(url, values)
+	createTydResult = json.loads(r.decode())
+	if createTydResult['status'] == 200:
+		ruKuResult['status'] = createTydResult['status']
+		ruKuResult['message'] = createTydResult['message']
+		ruKuResult['tydId'] = tyd_id
+	else:
+		ruKuResult['status'] = createTydResult['status']
+		ruKuResult['message'] = createTydResult['message']
+		print "托运单创建失败!"
 
-
-
-
-
-
-
+	return ruKuResult
 
 
 

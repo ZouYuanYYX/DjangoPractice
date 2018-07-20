@@ -23,5 +23,9 @@ urlpatterns = [
     url(r'^login_action/$', views.login_action),
     url(r'^getsendStation/$', views.getsendStation),
     url(r'^getReceiverStation/$', views.getReceiverStation),
+    url(r'^getTiHuoDanId/$', views.getTiHuoDanId),
+    url(r'^getFenBoDanId/$', views.getFenBoDanId),
+    url(r'^getPeiZaiDanId/$', views.getPeiZaiDanId),
+    url(r'^getPeiSongDanId/$', views.getPeiSongDanId),
     url(r'^createTYD/$', views.createTYD),
 ]

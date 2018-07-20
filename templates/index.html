@@ -13,207 +13,931 @@
  <form>
 	<div >
 		<p style = "color:#FF0000;">请选择托运单状态:
-		<select style="margin:10px;width:160px" id = "tydStatus">
+		<select style="margin:10px;width:200px" id = "tydStatus" onchange="tydClearValue()">
 		    <option value = ""> </option>
 			<option value = "已开单">已开单 </option>
-			<option value = "已提货">已提货 </option>
+			<!-- <option value = "已提货">已提货 </option>  -->
 			<option value = "已入库">已入库 </option>
 			<option value = "已配载">已配载 </option>
 			<option value = "运输中">运输中 </option>
 			<option value = "已到站">已到站 </option>
-			<option value = "已配送">已配送 </option>
+            <option value = "已配送(配送单待运输)">已配送(配送单待运输) </option>
+			<option value = "已配送(配送单运输中)">已配送(配送单运输中) </option>
 			<option value = "已签收">已签收 </option>
 		</select>
 		</p>
 
 		<div style="display: none" id = "createFenBoDan">
-		<p style = "color:#FF0000">是否要生成分拨单:
-		<select style="margin:10px;padding-right:28px;;width:160px">
-		    <option value = ""> </option>
-			<option value = "是">是   </option>
-			<option value = "否">否   </option>
-		</select>
-		</p>
+		    <p style = "color:#FF0000">是否要生成分拨单:
+		    <select style="margin:10px;padding-right:28px;;width:200px" class="createFenBoDan" id = "needCreateFenBoDan" onchange="fbdClearValue()">
+			    <option value = "否">否   </option>
+			    <option value = "是">是   </option>
+		    </select>
+		    </p>
+		</div>
+        <div style="display: none" id = "createPeiSongDan">
+		    <p style = "color:#FF0000">是否要生成配送单:
+		    <select style="margin:10px;padding-right:28px;;width:200px" class="createPeiSongDan" id = "needCreatePeiSongDan">
+			    <option value = "否">否   </option>
+			    <option value = "是">是   </option>
+		    </select>
+		    </p>
 		</div>
 	<table cellspacing="10px">
-	  <tbody>
+
 	   <tr>
 	    <td scope = "col" style="text-align:right;">用户名：</td>
-		<td><input type = "text" maxlength="20" style="width:200px"  placeholder = "用户名" name = "username" id = "name"/></td>
-		<td scope = "raw" style="text-align:right;" >&emsp;密码：</td>
-		<td><input type = "text" maxlength="20" style="width:200px"  placeholder = "密码" name = "password" id = "psswd"  onchange = "ajax_request()"/></td>
-	   </tr>
+		<td><input type = "text" maxlength="20" style="width:240px"  placeholder = "用户名" name = "username" id = "name"/></td>
+		<td scope = "raw" style="text-align:right;" >&emsp;密   码：</td>
+		<td><input type = "text" maxlength="20" style="width:240px"  placeholder = "密码" name = "password" id = "psswd" /></td>
+           <td> <button type="button" id = "createTYDUserLogin" style="height:21px;padding-right:8px;padding-left:8px;" onclick="ajax_request()">登陆</button> </td>
+       </tr>
 
 	   <tr>
 	     <td scope = "col" style="text-align:right;">发货网点：</td>
-        <td><select  style="width:204px"  name = "senderpoint" id = "senderpoint">
-		</select></td>
+         <td>
+             <select  style="width:244px"  name = "senderpoint" id = "senderpoint">
+             </select>
+         </td>
 
 		 <td scope = "raw" style="text-align:right;">&emsp;收货网点：</td>
-        <td><select  style="width:204px"  name = "receiverpoint" id = "receiverpoint">
-		</select></td>
+         <td>
+             <select  style="width:244px"  name = "receiverpoint" id = "receiverpoint">
+                 <option value = "">  </option>
+             </select>
+         </td>
 	   </tr>
-
-		<p>
-
-		</p>
 
 
 		<tr>
-	     <td scope = "col" style="text-align:right;">货物名称：</td>
-          <td><input type = "text" style="width:200px" placeholder = "货物名称" name = "goodsname" id = "goodsname"/></td>
-
+	      <td scope = "col" style="text-align:right;">货物名称：</td>
+          <td><input type = "text" style="width:240px" placeholder = "货物名称" name = "goodsname" id = "goodsname"/></td>
 
 		  <td scope = "col" style="text-align:right;">提货方式：</td>
-		<td>
-        <select style="width:204px"   name = "pickway" id = "pickway">
-            <option value = ""> </option>
-			<option value = "上门提货">上门提货   </option>
-			<option value = "送货上门">送货上门   </option>
-		</select></td>
+		  <td>
+                <select style="width:244px"   name = "pickway" onchange = "getThdMessage()" id = "pickway">
+                    <option value = ""> </option>
+			        <option value = "上门提货">上门提货   </option>
+			        <option style="display:none" id = "homeDelivery"value = "自送上门">自送上门   </option>
+		        </select>
+          </td>
+
 		</tr>
+
+
+       <tr style="display:none" id = "tiHuoDan">
+
+            <td scope = "col" style="text-align:right;">提货单号：</td>
+            <td><input type = "text" style="width:240px" placeholder = "提货单号" name = "thdId" id = "thdId" disabled="true"/></td>
+
+            <td scope = "col" style="text-align:right;">提货网点：</td>
+            <td>
+                <input  style="width:244px"  name = "tihuoPoint" id = "tihuopoint" disabled="true">
+		        </input>
+            </td>
+       </tr>
+
+
 	  </tbody>
 	</table>
+
+         <div style = "display: none" id = "fenBoDan">
+             <p scope = "col" >
+                 <label style="margin-left:10px">分拨单号：</label>
+                    <input type = "text" style="width:150px" placeholder = "分拨单号" name = "fbdId" id = "fbdId" disabled="true"/>
+                 <label  style="margin-left:10px">转出网点：</label>
+                    <input  style="width:130px"  name = "fbd_sendPoint" id = "fbd_sendPoint" disabled="true">
+		            </input>
+                 <label style="margin-left:10px">转入网点：</label>
+                    <select  style="width:130px"  name = "fbd_receivePoint" id = "fbd_receivePoint">
+                    </select>
+             </p>
+        </div>
+
+
+        <div style = "display: none" id = "fenBoShouHuoUser">
+
+            <!--<div id="validateFenBoShouHuoUser" style="display: block;">
+                <div style="max-width: 410px; background-color: rgb(255, 255, 224); border: 1px solid rgb(247, 206, 57); color: rgb(51, 51, 51); font-size: 12px; padding: 5px 10px; z-index: 2002; position: absolute; top: 263px; left: 62.5469px; margin-left: -2px;">
+                   <div style="width: 12px; left: 50%; margin-left: -6px; height: 6px; text-indent: 0px; overflow: hidden; position: absolute; bottom: -6px;">
+                   <before style="border-color: rgb(247, 206, 57) transparent transparent; border-style: solid dashed dashed; top: 0px; width: 0px; height: 0px; overflow: hidden; border-width: 6px; position: absolute;"></before>
+                       <after style="border-color: rgb(255, 255, 224) transparent transparent; border-style: solid dashed dashed; top: -1px; width: 0px; height: 0px; overflow: hidden; border-width: 6px; position: absolute;"></after>
+                   </div>
+                    当前登陆账号无该分拨单转入网点的收货权限，请使用有权限的用户收货：
+                </div>
+            </div>  -->
+             <p scope = "col" >
+                 <label style="margin-left:10px">分拨收货：</label>
+                    <input type = "text" style="width:250px" placeholder = "分拨收货用户名" name = "fbUser" id = "fbUser" />
+                 &thinsp;
+                 <label  style="margin-left:10px">用户密码：</label>
+                    <input  style="width:255px" placeholder = "分拨收货用户密码" name = "fbd_password" id = "fbd_password" >
+                    </input>&nbsp;
+                    <button type="button" style="height:21px;padding-right:8px;padding-left:8px;" onclick = "fbdUserLogin()">  登陆  </button>
+             </p>
+        </div>
+
+        <div style = "display: none" id = "peiZaiDan">
+             <p scope = "col" >
+                 <label style="margin-left:10px">配载单号：</label>
+                    <input type = "text" style="width:150px" placeholder = "配载单号" name = "pzdId" id = "pzdId" disabled="true"/>
+                 <label style="margin-left:10px">转出网点：</label>
+                    <input  style="width:130px"  name = "pzd_sendPoint" id = "pzd_sendPoint"  disabled="true">
+		            </input>
+                 <label style="margin-left:10px">转入网点：</label>
+                    <input  style="width:128px"  name = "pzd_receivePoint" id = "pzd_receivePoint" disabled="true"/>
+             </p>
+        </div>
+
+        <div style = "display: none" id = "peiZaiShouHuoUser">
+
+             <p scope = "col" >
+                 <label style="margin-left:10px">到货确认：</label>
+                    <input type = "text" style="width:250px" placeholder = "配载单到货确认用户名" name = "pzUser" id = "pzUser"/>
+                 &thinsp;
+                 <label  style="margin-left:10px">用户密码：</label>
+                    <input  style="width:255px" placeholder = "配载单到货确认用户密码" name = "pzd_password" id = "pzd_password" >
+		            </input>&nbsp;
+                 <button type="button" style="height:21px;padding-right:8px;padding-left:8px;" onclick="pzdUserLogin()">  登陆  </button>
+             </p>
+        </div>
+
+        <div style = "display: none" id = "peiSongDan">
+             <p scope = "col" >
+                 <label style="margin-left:10px">配送单号：</label>
+                    <input type = "text" style="width:250px" placeholder = "配送单号" name = "psdId" id = "psdId" disabled="true"/>
+                 <label style="margin-left:17px">配送网点：</label>
+                    <input  style="width:255px"  name = "psd_sendPoint" id = "psd_sendPoint"  disabled="true">
+		            </input>
+                 </p>
+        </div>
 
 		<p>
 
 		</p>
 
-		<button type="button" onclick = "createTYD()" style="margin-left:300px;height:35px;padding-right:20px;padding-left:20px;background-color: #FF0000;color:white;">创  建</button>
+		<button type="button" id = "createTmsTYD" onclick = "createTYD()" style="margin-left:315px;height:35px;padding-right:20px;padding-left:20px;background-color: #FF0000;color:white;">创  建</button>
 
         <p>
 
 		</p>
-        <p id = "result"> </p>
+        <div id = "result_tydId" style = "display: none">
+            <p>托运单号：
+                <label id = "result"> </label>
+            </p>
+        </div>
+
+
+        <p>
+
+		</p>
+
+        <div id = "error" style = "display: none" >
+            <p style = "color:#FF0000;">错误信息：
+                <label style = "color:#FF0000;" id = "errorMessage"> </label>
+            </p>
+        </div>
 
   </div>
 
  </form>
 
  <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"> </script>
+
     <script>
         //商户登陆后的token
-        var token;
+        var token = "";
+        //为了使分拨单能收货，用户登陆后的token
+        var fbdToken = "";
+        //为了使配载单能到货确认，用户登陆后的token
+        var pzdToken = "";
+        //用来标记账户是否有分拨单收货权限
+        var fbdAuthority = true;
+        //用来标记账户是否有配载单发车（转出网点）权限
+        var pzdSendPointAuthority = true;
+        //用来标记账户是否有配载单到货确认（转入网点）权限
+        var pzdReceiverPointAuthority = true;
 
+
+        //根据元素id获取select的值
+        function getSelectValue(id) {
+            //var obj = document.getElementById(id);
+            //var index = obj.selectedIndex;//序号，取当前选中选项的序号
+            //var text = obj.options[index].value;
+            return $("#"+id).val();
+        }
+        //根据元素className获取select的值
+        function getSelectValueByClassName(className) {
+            return $("."+className).val();
+        }
+        //将id为select1的值赋给id为select2
+        function copySelectValue(selectId1,selectId2) {
+            var select1 = document.getElementById(selectId1);
+            console.log("select1.options.length:"+select1.options.length);
+            for (var j=0;j<select1.options.length;j++) {
+                var text=select1.options[j].text;
+                $("#"+selectId2).append("<option value='"+text+"'>"+text+"</option>");
+            }
+        }
+
+        //判断某个input输入框的值是否在某个select中
+        function inputValueInSelect(inputId,selectId) {
+            var inputValue = $("#"+inputId).val();
+            var select = document.getElementById(selectId);
+            var flag = false;
+            for (var j=0;j<select.options.length;j++) {
+                var text=select.options[j].text;
+                if (inputValue == text) {
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        }
+
+        //判断select1选择的值是否在select2中
+        function selectValueInSelect(selectId1,selectId2) {
+            var selectValue = getSelectValue(selectId1);
+            var select = document.getElementById(selectId2);
+            var flag = false;
+            for (var j=0;j<select.options.length;j++) {
+                var text=select.options[j].text;
+                if (selectValue == text) {
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        }
+        //判断两个元素填写的值是否相同
+        function judgeTheSameValue(idOne,idTwo) {
+            var flag = false;
+            var valueOne = $("#"+idOne).val();
+            var valueTwo = $("#"+idTwo).val();
+            if ( (valueOne == valueTwo) && valueOne!= '' && valueTwo!= '') {
+                flag = true;
+            }
+            return flag;
+        }
+
+        function clearValue() {
+            if ( $("#name").val() != '') {
+                document.getElementById("name").value = '';
+            }
+            if ( $("#psswd").val() != '') {
+                document.getElementById("psswd").value = '';
+            }
+             if ( $("#senderpoint").val() != '') {
+                document.getElementById("senderpoint").value = '';
+             }
+            if ( $("#receiverpoint").val() != '') {
+                document.getElementById("receiverpoint").value = '';
+            }
+            if ( $("#goodsname").val() != '') {
+                document.getElementById("goodsname").value = '';
+            }
+            if ( $("#pickway").val() != '') {
+                document.getElementById("pickway").value = '';
+
+                if ( $("#thdId").val() != '') {
+                    document.getElementById("thdId").value = '';
+                    console.log("执行了:"+$("#thdId").val());
+                }
+                if ( $("#tihuopoint").val() != '') {
+                    document.getElementById("tihuopoint").value = '';
+                    $("#tiHuoDan").attr("style"," display: none;");
+                }
+            }
+            if ( $("#pickway").val() == '') {
+                $("#tiHuoDan").attr("style"," display: none;");
+            }
+
+            if ( $("#pzdId").val() != '') {
+                document.getElementById("pzdId").value = '';
+            }
+            if ( $("#pzd_sendPoint").val() != '') {
+                document.getElementById("pzd_sendPoint").value = '';
+            }
+            if ( $("#pzd_receivePoint").val() != '') {
+                document.getElementById("pzd_receivePoint").value = '';
+            }
+            if ( ($("#pzd_sendPoint").val() == '') && ($("#pzd_receivePoint").val() == '') ) {
+                $("#peiZaiShouHuoUser").attr("style"," display: none;");
+            }
+            if ( $("#psdId").val() != '') {
+                document.getElementById("psdId").value = '';
+            }
+            if ( $("#psd_sendPoint").val() != '') {
+                document.getElementById("psd_sendPoint").value = '';
+            }
+            if ( $("#fbdId").val() != '') {
+                document.getElementById("fbdId").value = '';
+            }
+            if ( $("#fbd_sendPoint").val() != '') {
+                document.getElementById("fbd_sendPoint").value = '';
+            }
+            if ( $("#fbd_receivePoint").val() != '') {
+                document.getElementById("fbd_receivePoint").value = '';
+            }
+            if ( $("#fbUser").val() != '') {
+                document.getElementById("fbUser").value = '';
+                $("#fenBoShouHuoUser").attr("style"," display: none;");
+            }
+            if ( $("#fbd_password").val() != '') {
+                document.getElementById("fbd_password").value = '';
+            }
+            if ( $("#needCreateFenBoDan").val() == '否') {
+                $("#fenBoShouHuoUser").attr("style"," display: none;");
+            }
+            if ( $("#pzUser").val() != '') {
+                document.getElementById("pzUser").value = '';
+                $("#peiZaiShouHuoUser").attr("style"," display: none;");
+            }
+            if ( $("#pzd_password").val() != '') {
+                document.getElementById("pzd_password").value = '';
+            }
+        }
+        //页面控制，托运单状态值变更后，清空输入
+        function tydClearValue() {
+
+            if ( getSelectValueByClassName("createFenBoDan") == "是" ) {
+                document.getElementById("needCreateFenBoDan").value = "否";
+                $("#fenBoDan").attr("style"," display: none;");
+            }
+            if ( getSelectValue("needCreatePeiSongDan") == "是" ) {
+                document.getElementById("needCreatePeiSongDan").value = "否";
+                $("#peiSongDan").attr("style"," display: none;");
+            }
+            clearValue();
+
+        }
+        //页面控制，是否选择分拨单按钮值变更后，清空部分输入
+        function fbdClearValue() {
+
+             clearValue();
+        }
+
+        //调登录接口方法封装,userNameElementId:用户名元素id
+        function merchantLogin(userNameElementId,passwordElementId) {
+            var loginToken = "";
+            var userName = document.getElementById(userNameElementId).value;
+            var password = document.getElementById(passwordElementId).value;
+            //登陆接口
+            if (userName == "") {
+                window.alert("用户名不能为空");
+            } else {
+                $.ajax({
+                    url: '/login_action/',
+                    type: 'POST',
+                    async: false,
+                    data: {'username': userName, 'password': password},
+                    success: function (response) {
+                        let {status,message, data} = JSON.parse(response);
+                        if(status == 200) {
+                            loginToken = data.token;
+                            $("#error").attr("style"," display: none;");
+                        } else {
+                            if ( $("#error").css("display") == 'none' ) {
+                                document.getElementById("errorMessage").innerHTML = message;
+                                $("#error").attr("style"," display: block;");
+                            }
+                        }
+                    }
+                });
+            }
+            return loginToken;
+        }
+        //用户登陆后，将发货网点数据存储到list中，判断某个网点是否在用户发货网点中
+        function valueInUserSenderStation(elementId,userName,token) {
+            var flag = false;
+            var elementValue = $("#"+elementId).val();
+            var list = [];
+            $.ajax({
+                url: '/getsendStation/',
+                type: 'POST',
+                async:false,
+                data: {'mobile': userName, 'merchantToken': token},
+                success: function (response) {
+                    let {status, message,data} = JSON.parse(response);
+                    if(status == 200) {
+                        if(Array.isArray(data) && data.length!=0) {
+                            data.map(item=>{
+                                list.push(item.name);
+                            })
+                         }
+                         $("#error").attr("style"," display: none;");
+                    } else {
+                        if ( $("#error").css("display") == 'none' ) {
+                            document.getElementById("errorMessage").innerHTML = message;
+                            $("#error").attr("style"," display: block;");
+                        }
+                    }
+                }
+            });
+            console.log("list:"+list);
+            for (var i = 0;i<list.length;i++) {
+                if (elementValue == list[i]) {
+                    flag = true;
+                }
+            }
+            return flag;
+        }
+        //判断账号是否有分拨单收货权限、配载单发车、到货确认权限
+        function judgementTheAuthority() {
+            if ($("#fbd_password").val() != "" ){
+                //分拨单为了能收货，用户登陆后，再次判断新用户是否有转入网点的权限
+                var haveInPointAuthority = valueInUserSenderStation("fbd_receivePoint",$("#fbUser").val(),fbdToken);
+                if (haveInPointAuthority == false) {
+                    fbdAuthority = false;
+                    window.alert("登陆的用户没有此分拨单转入网点的权限，请重新选择用户");
+                    //$("#validateFenBoShouHuoUser").attr("style"," display: block;");
+                } else {
+                    fbdAuthority = true;
+                }
+            }
+            if ($("#pzd_password").val() != "" ){
+                //运输中之后的状态，登陆后，判断该登陆用户对转出网点是否有权限
+                var haveOutPointAuthority = valueInUserSenderStation("pzd_sendPoint",$("#pzUser").val(),pzdToken);
+                if (haveOutPointAuthority == false) {
+                    pzdSendPointAuthority = false;
+                    window.alert("登陆的用户没有此配载单转出网点的权限，请重新选择用户");
+
+                } else {
+                    pzdSendPointAuthority = true;
+                }
+                //登陆后，判断该登陆用户对转入网点是否有权限
+                if ( ($("#tydStatus").val() == "已到站") || ($("#tydStatus").val() == "已配送(配送单待运输)") ||($("#tydStatus").val() == "已配送(配送单运输中)")|| ($("#tydStatus").val() == "已签收") ) {
+                    //登陆后，判断该登陆用户转入网点是否有权限
+                    var haveInPointAuthority = valueInUserSenderStation("pzd_receivePoint",$("#pzUser").val(),pzdToken);
+                    if (haveInPointAuthority == false) {
+                        pzdReceiverPointAuthority= false;
+                        window.alert("登陆的用户没有此配载单转入网点的权限，请重新选择用户");
+                    } else {
+                        pzdReceiverPointAuthority = true;
+                    }
+                }
+            }
+
+        }
+        //页面展示控制
 		$(document).ready(function() {
-			$("#tydStatus").click(function() {
-				var obj = document.getElementById("tydStatus");
-				var index = obj.selectedIndex;//序号，取当前选中选项的序号
-				var text = obj.options[index].value;
-				if(text == "已配载") {
+			$("#tydStatus").change(function() {
+			    var text = $("#tydStatus").val();
+				if( text != "已开单"  && text != "已入库") {
 					$("#createFenBoDan").attr("style"," display: block;");
+					$("#peiZaiDan").attr("style"," display: block;");
 				} else {
 					$("#createFenBoDan").attr("style"," display: none;");
+					$("#peiZaiDan").attr("style"," display: none;");
+					$("#fenBoShouHuoUser").attr("style"," display: none;");
+				}
+
+				if(text != "已开单") {
+					$("#homeDelivery").attr("style"," display: block;");
+				} else {
+					$("#homeDelivery").attr("style"," display: none;");
+				}
+
+				//已配送是否包含在text中
+				if ( text == "已配送(配送单待运输)" || text == "已配送(配送单运输中)") {
+				    $("#peiSongDan").attr("style"," display: block;");
+                } else {
+					$("#peiSongDan").attr("style"," display: none;");
+				}
+				if (text == "已签收") {
+				    $("#createPeiSongDan").attr("style"," display: block;");
+                } else {
+					$("#createPeiSongDan").attr("style"," display: none;");
+
 				}
 			}) ;
+
+			$(".createFenBoDan").change(function() {
+				var text = getSelectValueByClassName("createFenBoDan");
+				if(text == "是") {
+					$("#fenBoDan").attr("style"," display: block;");
+				} else {
+					$("#fenBoDan").attr("style"," display: none;");
+					$("#fenBoShouHuoUser").attr("style"," display: none;");
+				}
+			}) ;
+
+			$("#createPeiSongDan").change(function() {
+				var text = getSelectValueByClassName("createPeiSongDan");
+				if(text == "是") {
+					$("#peiSongDan").attr("style"," display: block;");
+				} else {
+					$("#peiSongDan").attr("style"," display: none;");
+				}
+			}) ;
+
+			$("#pickway").change(function() {
+				var text = $("#tydStatus").val();
+				var pickGoodsWay = getSelectValue("pickway");
+				if(text != "已开单" && pickGoodsWay == "上门提货") {
+					$("#tiHuoDan").attr("style"," display: table-row;");
+				} else {
+					$("#tiHuoDan").attr("style"," display: none;");
+				}
+			}) ;
+            //发货网点选择变化后，相关字段也要变化
+			$("#senderpoint").change(function() {
+				var createFenBoDan = getSelectValueByClassName("createFenBoDan");
+				if( $("#tiHuoDan").css("display") != 'none' ) {
+					document.getElementById("tihuopoint").value = getSelectValue("senderpoint");
+				}
+				if( $("#fenBoDan").css("display") != 'none' ) {
+					document.getElementById("fbd_sendPoint").value = getSelectValue("senderpoint");
+				}
+
+				if ( createFenBoDan == "否") {
+                    if( $("#peiZaiDan").css("display") != 'none' ) {
+					    document.getElementById("pzd_sendPoint").value = getSelectValue("senderpoint");
+				    }
+                }
+			}) ;
+			//收货网点选择变化后，相关字段也要变化
+			$("#receiverpoint").change(function() {
+			    var text = $("#tydStatus").val();
+                if( $("#peiZaiDan").css("display") != 'none' ) {
+                    document.getElementById("pzd_receivePoint").value = getSelectValue("receiverpoint");
+                }
+                if( $("#peiSongDan").css("display") == 'block' ) {
+                    document.getElementById("psd_sendPoint").value = getSelectValue("receiverpoint");
+                }
+                var pzdConfirmAuthority = inputValueInSelect("pzd_receivePoint","senderpoint");
+                var pzdSendCarAuthority = inputValueInSelect("pzd_sendPoint","senderpoint");
+                //配载单，如果当前用户没有转入网点的权限（没权限就无法到货确认），则重新输入有权限的用户
+                if (text == "已到站" || (text == "已配送(配送单待运输)") ||(text == "已配送(配送单运输中)") || text == "已签收") {
+                    if ( (pzdConfirmAuthority == false || pzdSendCarAuthority == false) && $("#pzd_receivePoint").val() != "" && $("#pzd_sendPoint").val() != "") {
+                        $("#peiZaiShouHuoUser").attr("style"," display: block;");
+                    } else {
+                        //不显示配载单用户相关的input
+			            $("#peiZaiShouHuoUser").attr("style"," display: none;");
+			            //清空之前输入的配载单用户信息
+                        document.getElementById("pzd_password").value = '';
+                        document.getElementById("pzUser").value = '';
+                        pzdReceiverPointAuthority = true ;
+                    }
+                }
+			}) ;
+
+			//如果要生成分拨单，则配载单的转出网点是分拨单的转入
+            //如果分拨单转入网点当前用户没有权限，则要求输入有权限的用户
+			$("#fbd_receivePoint").change(function() {
+			    var createFenBoDan = getSelectValueByClassName("createFenBoDan");
+			    var fbdShouHuoAuthority = selectValueInSelect("fbd_receivePoint","senderpoint");
+			    var tydStatus = $("#tydStatus").val();
+			    if ( createFenBoDan == "是") {
+                    if( $("#fenBoDan").css("display") != 'none' ) {
+					    document.getElementById("pzd_sendPoint").value = getSelectValue("fbd_receivePoint");
+				    }
+				    //生成分拨单，判断当前用户对此配载单发货网点是否有权限，若无权限则要再次登陆
+                    var pzdSendCarAuthority = inputValueInSelect("pzd_sendPoint","senderpoint");
+                    var pzdConfirmAuthority = inputValueInSelect("pzd_receivePoint","senderpoint");
+                    //配载单，如果当前用户没有转出网点的权限，则无法发车
+                    if (tydStatus == "运输中" || tydStatus == "已到站" || tydStatus == "已配送(配送单待运输)" || tydStatus == "已配送(配送单运输中)" ||tydStatus == "已签收") {
+                        if ( (pzdSendCarAuthority == false || pzdConfirmAuthority == false) && $("#pzd_sendPoint").val() != "" && $("#pzd_receivePoint").val()) {
+                            $("#peiZaiShouHuoUser").attr("style"," display: block;");
+                        } else {
+                            $("#peiZaiShouHuoUser").attr("style"," display: none;");
+                            //清空之前输入的配载单用户信息
+                            document.getElementById("pzd_password").value = '';
+                            document.getElementById("pzUser").value = '';
+                            pzdSendPointAuthority = true ;
+                        }
+                    }
+                }
+                if (fbdShouHuoAuthority == false  && $("#fbd_receivePoint").val() != "" ) {
+                    $("#fenBoShouHuoUser").attr("style"," display: block;");
+                } else {
+			        $("#fenBoShouHuoUser").attr("style"," display: none;");
+			        //清空之前输入的分拨单用户信息
+                    document.getElementById("fbd_password").value = '';
+                    document.getElementById("fbUser").value = '';
+                    fbdAuthority = true ;
+                }
+			}) ;
+
+
+
 		});
 
-    //调收货网点接口后，处理接口返回的json值
-        function handleSenderPointResponse(list) {
-            let tempStr = "";
+        //调收货网点接口后，处理接口返回的json值
+        function handleSenderPointResponse(list,text,pickGoodsWay) {
             if(Array.isArray(list) && list.length!=0) {
                 list.map(item=>{
-                    //console.log(item.name);
                     $("#senderpoint").append("<option value='"+item.name+"'>"+item.name+"</option>");
+
                 })
             }
-            return tempStr;
         }
-    //调收货网点接口后，处理接口返回的json值
-        function handleReceiverPointResponse(list) {
-            let tempStr = "";
+        //调收货网点接口后，处理接口返回的json值
+        function handleReceiverPointResponse(elementId,list) {
             if(Array.isArray(list) && list.length!=0) {
                 list.map(item=>{
-                    //console.log(item.name);
-                    $("#receiverpoint").append("<option value='"+item.name+"'>"+item.name+"</option>");
+                    $("#"+elementId).append("<option value='"+item.name+"'>"+item.name+"</option>");
                 })
             }
-            return tempStr;
         }
 
     //调登录接口，调获取发货网点、收货网点的接口
 	function ajax_request(){
 	    var userName = document.getElementById("name").value;
 		var password = document.getElementById("psswd").value;
-		console.log("userName:"+userName);
-        console.log("password:"+password);
-        $.ajax({
-            url: '/login_action/',
-            type: 'POST',
-            async:false,
-            data: {'username': userName, 'password': password},
-            success: function (data) {
-                token = data;
-                //console.log(data);
-            }
-        })
+        //选择的托运单状态值
+        var tydStatus = getSelectValue("tydStatus");
+        //是否生成分拨单
+        var fenBoDanStatus = getSelectValueByClassName("createFenBoDan");
+        //是否生成配送单单
+        var peiSongDanStatus = getSelectValueByClassName("createPeiSongDan");
+         //提货方式
+        var pickGoodsWay = getSelectValue("pickway");
+        //调登陆接口
+        token = merchantLogin("name","psswd");
+        if ( token != '') {
+            //获取发货网点
+            $.ajax({
+                url: '/getsendStation/',
+                type: 'POST',
+                async:false,
+                data: {'mobile': userName, 'merchantToken': token},
+                success: function (response) {
+                    let {status, message,data} = JSON.parse(response);
+                    if(status == 200) {
+                        handleSenderPointResponse(data,tydStatus,pickGoodsWay);
+                        $("#error").attr("style"," display: none;");
+                    } else {
+                        if ( $("#error").css("display") == 'none' ) {
+                            document.getElementById("errorMessage").innerHTML = message;
+                            $("#error").attr("style"," display: block;");
+                        }
+                    }
+                }
+            })
+            //获取收货网点
+            $.ajax({
+                url: '/getReceiverStation/',
+                type: 'POST',
+                async:false,
+                data: {'mobile': userName, 'merchantToken': token},
+                success: function (response) {
+                    let {status,message,data} = JSON.parse(response);
+                    if(status == 200) {
+                        handleReceiverPointResponse("receiverpoint",data);
+                        $("#error").attr("style"," display: none;");
+                    }  else {
+                        if ( $("#error").css("display") == 'none' ) {
+                            document.getElementById("errorMessage").innerHTML = message;
+                            $("#error").attr("style"," display: block;");
+                        }
+                    }
+                }
+            })
 
-        $.ajax({
-            url: '/getsendStation/',
-            type: 'POST',
-            async:false,
-            data: {'mobile': userName, 'merchantToken': token},
-            success: function (response) {
-                let {status, data} = JSON.parse(response);
-                if(status == 200) {
-                    handleSenderPointResponse(data);
+            //获取分拨单相关信息
+
+            if (fenBoDanStatus == "是") {
+                //调接口获取分拨单id
+                $.ajax({
+                    url: '/getFenBoDanId/',
+                    type: 'POST',
+                    async:false,
+                    data: {'merchantToken': token},
+                    success: function (response) {
+                        let {status,message, data} = JSON.parse(response);
+                        if(status == 200) {
+                            document.getElementById("fbdId").value = data.separateNumber;
+                            $("#error").attr("style"," display: none;");
+                        } else {
+                            if ( $("#error").css("display") == 'none' ) {
+                                document.getElementById("errorMessage").innerHTML = message;
+                                $("#error").attr("style"," display: block;");
+                            }
+                        }
+                    }
+                });
+                //分拨单发货网点
+                document.getElementById("fbd_sendPoint").value = getSelectValue("senderpoint");
+                //分拨单收货网点是否有权限，没有权限则登陆其他有权限的用户
+                copySelectValue("receiverpoint","fbd_receivePoint");
+                var fbdShouHuoAuthority = selectValueInSelect("fbd_receivePoint","senderpoint");
+                if (fbdShouHuoAuthority == false  && $("#fbd_receivePoint").val() != "") {
+                    $("#fenBoShouHuoUser").attr("style"," display: block;");
+                } else {
+                    $("#fenBoShouHuoUser").attr("style"," display: none;");
                 }
             }
-        })
 
-        $.ajax({
-            url: '/getReceiverStation/',
-            type: 'POST',
-            async:false,
-            data: {'mobile': userName, 'merchantToken': token},
-            success: function (response) {
-                let {status, data} = JSON.parse(response);
-                if(status == 200) {
-                    handleReceiverPointResponse(data);
+            //获取配载单id
+            if (tydStatus != "已开单"  && tydStatus != "已入库" ) {
+                //调接口获取配载单id
+                $.ajax({
+                    url: '/getPeiZaiDanId/',
+                    type: 'POST',
+                    async:false,
+                    data: {'merchantToken': token},
+                    success: function (response) {
+                        let {status, message,data} = JSON.parse(response);
+                        if(status == 200) {
+                            document.getElementById("pzdId").value = data;
+                            $("#error").attr("style"," display: none;");
+                        } else {
+                            if ( $("#error").css("display") == 'none' ) {
+                                document.getElementById("errorMessage").innerHTML = message;
+                                $("#error").attr("style"," display: block;");
+                            }
+                        }
+                    }
+                });
+                //配载单发货网点设置值
+                if (fenBoDanStatus == "否") {
+                    document.getElementById("pzd_sendPoint").value = getSelectValue("senderpoint");
+                } else {
+                    //如果要生成分拨单，则分拨单的收货网点，对于配载单是发货网点，可能当前账户会没有此发货网点的权限
+                    document.getElementById("pzd_sendPoint").value = getSelectValue("fbd_receivePoint");
+                    //生成分拨单，判断当前用户对此配载单发货网点是否有权限，若无权限则要再次登陆
+                    var pzdSendCarAuthority = inputValueInSelect("pzd_sendPoint","senderpoint");
+                    //配载单，如果当前用户没有转出网点的权限，则无法发车
+                    if (tydStatus == "运输中" || tydStatus == "已到站" || tydStatus == "已配送(配送单运输中)" || tydStatus == "已配送(配送单待运输)" ||tydStatus == "已签收") {
+                        if ( pzdSendCarAuthority == false && $("#pzd_sendPoint").val() != "" && $("#pzd_receivePoint").val()) {
+                            $("#peiZaiShouHuoUser").attr("style"," display: block;");
+                        } else {
+                            $("#peiZaiShouHuoUser").attr("style"," display: none;");
+                        }
+                    }
+                }
+                //配载单收货网点设置值
+                document.getElementById("pzd_receivePoint").value = getSelectValue("receiverpoint");
+
+                //当前用户对此配载单收货网点是否有权限，若无权限则要再次登陆
+                var pzdConfirmAuthority = inputValueInSelect("pzd_receivePoint","senderpoint");
+                //配载单，如果当前用户没有转入网点的权限（没权限就无法到货确认），则重新输入有权限的用户
+                if (tydStatus == "已到站" || tydStatus == "已配送(配送单待运输)" || tydStatus == "已配送(配送单运输中)" ||tydStatus == "已签收") {
+                    if ( pzdConfirmAuthority == false && $("#pzd_receivePoint").val() != "" && $("#pzd_sendPoint").val() != "") {
+                        $("#peiZaiShouHuoUser").attr("style"," display: block;");
+                    } else {
+                        $("#peiZaiShouHuoUser").attr("style"," display: none;");
+                    }
                 }
             }
-        })
+
+            //获取配送单id
+            if (tydStatus == "已配送(配送单待运输)"  || tydStatus == "已配送(配送单运输中)" || peiSongDanStatus == "是" ) {
+                //调接口获取配送单id
+                $.ajax({
+                    url: '/getPeiSongDanId/',
+                    type: 'POST',
+                    async:false,
+                    data: {'merchantToken': token},
+                    success: function (response) {
+                        let {status,message, data} = JSON.parse(response);
+                        if(status == 200) {
+                            document.getElementById("psdId").value = data;
+                            $("#error").attr("style"," display: none;");
+                        } else {
+                            if ( $("#error").css("display") == 'none' ) {
+                                document.getElementById("errorMessage").innerHTML = message;
+                                $("#error").attr("style"," display: block;");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
     }
-    //处理select
-    function getSelectValue(id) {
-        //var obj = document.getElementById(id);
-        //var index = obj.selectedIndex;//序号，取当前选中选项的序号
-        //var text = obj.options[index].value;
-        return $("#"+id).val();
-        //return text;
+
+        //获取提货单相关信息
+        function getThdMessage(){
+            //选择的托运单状态值
+            var tydStatus = getSelectValue("tydStatus");
+             //提货方式
+            var pickGoodsWay = getSelectValue("pickway");
+            document.getElementById("tihuopoint").value = getSelectValue("senderpoint");
+            //调接口获取提货单id
+            if (tydStatus != "已开单"&&pickGoodsWay == "上门提货") {
+                $.ajax({
+                url: '/getTiHuoDanId/',
+                type: 'POST',
+                async:false,
+                data: {'merchantToken': token},
+                success: function (response) {
+                    let {status,message, data} = JSON.parse(response);
+                    if(status == 200) {
+                        document.getElementById("thdId").value = data;
+                        $("#error").attr("style"," display: none;");
+                    } else {
+                        if ( $("#error").css("display") == 'none' ) {
+                            document.getElementById("errorMessage").innerHTML = message;
+                            $("#error").attr("style"," display: block;");
+                        }
+                    }
+                }
+            })
+            }
+        }
+
+    //调登录接口
+	function fbdUserLogin() {
+        //登陆接口
+        fbdToken = merchantLogin("fbUser","fbd_password");
     }
-    //创建工单的方法
+    //调登录接口
+	function pzdUserLogin() {
+        //登陆接口
+        pzdToken = merchantLogin("pzUser","pzd_password");
+    }
+    //创建托运单的方法
     function createTYD() {
         //选择的托运单状态值
         var tydStatus = getSelectValue("tydStatus");
+        //是否要创建分拨单
+        var createFenBoDan = getSelectValueByClassName("createFenBoDan");
+        //是否要创建配送单
+        var createPeiSongDan = getSelectValueByClassName("createPeiSongDan");
         //手机号
         var phone = document.getElementById("name").value;
-        console.log("phone:"+phone);
-        //网点数据
+        //密码
+        var password = document.getElementById("psswd").value;
+        //发货网点
         var senderStation = getSelectValue("senderpoint");
-        console.log("senderStation:"+senderStation);
-
+        //收货网点
         var receiverStation = getSelectValue("receiverpoint");
-        console.log("receiverStation:"+receiverStation);
         //提货方式
         var pickGoodsWay = getSelectValue("pickway");
         console.log("pickGoodsWay:"+pickGoodsWay);
         //货物名称
         var goodsName = document.getElementById("goodsname").value;
-        console.log("goodsName:"+goodsName);
-        $.ajax({
-            url: '/createTYD/',
-            type: 'POST',
-            async:false,
-            data: {'tydStatus':tydStatus,'mobile':phone,'merchantToken':token,'senderStation':senderStation,'receiverStation':receiverStation,'pickGoodsWay':pickGoodsWay,'goodsName':goodsName},
-            success: function (response) {
-                console.log(response)
-                document.getElementById("result").innerHTML = response;
+        //提货单号
+        var thdId = document.getElementById("thdId").value;
+        //提货网点
+        var takeGoodsStation = getSelectValue("tihuopoint");
+        //分拨单号
+        var fbdId = document.getElementById("fbdId").value;
+        //分拨单对应转出网点
+        var fbdSenderPoint = document.getElementById("fbd_sendPoint").value;
+        //分拨单对应转入网点
+        var fbdReceiverPoint = document.getElementById("fbd_receivePoint").value;
+        //配载单号
+        var pzdId = document.getElementById("pzdId").value;
+        //配载单对应转出网点
+        var pzdSenderPoint = document.getElementById("pzd_sendPoint").value;
+        //配载单对应转入网点
+        var pzdReceiverPoint = document.getElementById("pzd_receivePoint").value;
+        //配送单号
+        var psdId = document.getElementById("psdId").value;
+        //配送网点
+        var deliveryPoint = document.getElementById("psd_sendPoint").value;
+
+        if (tydStatus == "" ) {
+            window.alert("请选择托运单状态");
+        } else if (receiverStation == "") {
+            window.alert("请选择收货网点");
+        } else if (goodsName == ""){
+            window.alert("请填写货物名称");
+        } else if (pickGoodsWay == ""){
+            window.alert("请选择提货方式");
+        } else if (password == ""){
+            window.alert("请输入密码");
+        } else if ( (fbdReceiverPoint == "") && ( $("#fenBoDan").css("display") != 'none' )) {
+            window.alert("请选择分拨单转入网点");
+        } else if (judgeTheSameValue("senderpoint","receiverpoint") || judgeTheSameValue("fbd_sendPoint","fbd_receivePoint")
+            || judgeTheSameValue("pzd_sendPoint","pzd_receivePoint")) {
+            window.alert("发货网点与收货网点不能相同，或转出网点与转入网点不能相同");
+        }  else{
+            judgementTheAuthority();
+            if ( (fbdAuthority == true) && (pzdSendPointAuthority == true) && (pzdReceiverPointAuthority == true) ) {
+                $.ajax({
+                    url: '/createTYD/',
+                    type: 'POST',
+                    async:false,
+                    data: {'tydStatus':tydStatus,'createFenBoDan':createFenBoDan,'mobile':phone,'merchantToken':token,
+                    'senderStation':senderStation, 'receiverStation':receiverStation, 'pickGoodsWay':pickGoodsWay,
+                    'goodsName':goodsName,'thdId':thdId, 'takeGoodsStation':takeGoodsStation,'pzdId':pzdId,
+                    'pzdSenderPoint':pzdSenderPoint, 'pzdReceiverPoint':pzdReceiverPoint,'fbdId':fbdId,
+                    'fbdSenderPoint':fbdSenderPoint,'fbdReceiverPoint':fbdReceiverPoint,'fbdToken':fbdToken,'pzdToken':pzdToken,
+                    'psdId':psdId,'deliveryPoint':deliveryPoint,'createPeiSongDan':createPeiSongDan},
+                    success: function (response) {
+                        if(response.status == 200) {
+                            $("#error").attr("style"," display: none;");
+                            $("#result_tydId").attr("style"," display: block;");
+                            document.getElementById("result").innerHTML = response.tydId;
+                        } else {
+                            if ( $("#error").css("display") == 'none' ) {
+                                document.getElementById("errorMessage").innerHTML = response.message;
+                                $("#error").attr("style"," display: block;");
+                                $("#result_tydId").attr("style"," display: none;");
+                            }
+                        }
+                }})
             }
-        })
+
+        }
+        //把创建按钮灰显，且不允许点击
+        //$("#createTmsTYD").attr("style"," margin-left:315px;height:35px;padding-right:20px;padding-left:20px;background-color: #cccccc;color:black;");
+        //$("#createTmsTYD").attr("disabled","false");
     }
-
-
 
   </script>
  </body>

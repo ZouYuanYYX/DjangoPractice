@@ -25,7 +25,7 @@ SECRET_KEY = 'bts(rx9&rb#r_fdw4&u^mg_)^k(93#_o+mqedje87#192&6ne$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
